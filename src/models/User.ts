@@ -17,7 +17,7 @@ export const UserSchema = new Schema({
   password: { type: String, required: true },
   status: { type: String, required: true },
   projects: [{ projectId: { type: Schema.Types.ObjectId, ref: "Project" } }],
-  roleId: { type: Schema.Types.ObjectId, required: true },
+  roleId: { type: Schema.Types.ObjectId },
 });
 
 const User = mongoose.model<IUser>("User", UserSchema);

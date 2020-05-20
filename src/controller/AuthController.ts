@@ -3,9 +3,11 @@ import User, { IUser } from "../models/User";
 import bcrypt from "bcryptjs";
 import logger from "../Logger";
 import jwt from "jsonwebtoken";
+import { ResponseHandler } from "../util/ResponseHandler";
 export class AuthController {
   static secretkey: string = "mysecret";
   static async signup(req: Request, res: Response, next: NextFunction) {
+    logger.info("req.body" + JSON.stringify(req.body));
     try {
       const hashedPwd = await bcrypt.hash(req.body.password, 12);
       const savedUser = await new User({
@@ -14,10 +16,11 @@ export class AuthController {
         email: req.body.email,
         password: hashedPwd,
       }).save();
-      return res.status(201).json(savedUser);
+      return res.status(201).json(ResponseHandler.success(savedUser));
     } catch (error) {
       logger.error(error);
-      throw error;
+      return res.status(500).json(error.message);
+      next();
     }
   }
   static async login(req: Request, res: Response, next: NextFunction) {
